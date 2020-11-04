@@ -25,7 +25,7 @@ SECRET_KEY = '$w#igp9atubv7^!x^sy(l96re8-xz13dqcd3u=v#krb-=d^tmd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://mb-django-chatrooms.herokuapp.com/','127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -138,6 +138,10 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 
 ASGI_APPLICATION = 'django_chatroom.routing.application'
 
@@ -155,7 +159,9 @@ else:
       'default': {
           'BACKEND': 'channels_redis.core.RedisChannelLayer',
           'CONFIG': {
-              "hosts": [('redis-11816.c244.us-east-1-2.ec2.cloud.redislabs.com', 11816)],
+              "hosts": [('redis://:p6iKZNtXwcVEfayiIBeqfTtveQvf9tW9@redis-16748.c244.us-east-1-2.ec2.cloud.redislabs.com:16748')],
           },
       },
   }
+
+# export DJANGO_SETTINGS_MODULE=django_chatroom.settings

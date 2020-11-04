@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '$w#igp9atubv7^!x^sy(l96re8-xz13dqcd3u=v#krb-=d^tmd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'django_chatroom.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-ENV = 'PRODUCTION'
+ENV = 'DEVELOPMENT'
 
 if ENV == 'DEVELOPMENT':
   DATABASES = {
@@ -87,17 +87,6 @@ if ENV == 'DEVELOPMENT':
           'HOST': 'localhost',
           'PORT': '5432',
       }
-  }
-else:
-  DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd1tg62jh4pff3f',
-        'USER': 'cfjkivpydvxgdv',
-        'PASSWORD': '1c73f0bac8d3129b240ec077ed964b6422835be5c37b4b6d73cad12adb59dbd2',
-        'HOST': 'ec2-52-73-199-211.compute-1.amazonaws.com',
-        'PORT': '5432',
-    }
   }
 
 # Password validation
@@ -151,15 +140,6 @@ if ENV == 'DEVELOPMENT':
           'BACKEND': 'channels_redis.core.RedisChannelLayer',
           'CONFIG': {
               "hosts": [('127.0.0.1', 6379)],
-          },
-      },
-  }
-else:
-  CHANNEL_LAYERS = {
-      'default': {
-          'BACKEND': 'channels_redis.core.RedisChannelLayer',
-          'CONFIG': {
-              "hosts": [('redis://:p6iKZNtXwcVEfayiIBeqfTtveQvf9tW9@redis-16748.c244.us-east-1-2.ec2.cloud.redislabs.com:16748')],
           },
       },
   }

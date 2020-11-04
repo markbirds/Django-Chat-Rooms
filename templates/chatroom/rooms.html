@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<input type="hidden" id="current_user" value="{{user}}">
+<input type="hidden" id="current_user_id" value={{user_id}}>
+<input type="hidden" id="current_room_id">
+
+<div class="shadow p-4 mb-4 bg-white">
+  <div>
+    <a href="/" class="btn btn-dark btn-sm" role="button" id="logout">Logout</a>
+    <a href="/{{roomname}}/{{user}}/{{user_id}}" class="btn btn-dark btn-sm" role="button">Refresh</a>
+    <button class="btn btn-dark btn-sm float-right" data-toggle="modal" data-target="#room_details">Room Details</button>
+  </div>
+  {% include '../includes/_room_details.html' %}   
+  <div id="chat_header" class="mt-3">
+    <div class="alert alert-success alert-dismissible text-center mt-3">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      Hello {{ user }}!
+    </div>
+  </div>
+
+  <div id="chat_box" class="border p-3 my-3" style="height: 300px;overflow: auto;">
+      <ul style="list-style-type:none;padding: 0;" id="messages" class="mt-3">
+      </ul>
+  </div>
+
+  <div class="input-group mb-3" id="input_group">
+    <input type="text" class="form-control" placeholder="Some text" id="send_message">
+    <div class="input-group-append">
+        <button class="btn btn-outline-primary" type="button" id="send">Send</button>
+    </div>
+  </div>
+</div>
+{{ roomname|json_script:"roomname" }}
+{% endblock %}
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+
+$(document).ready(function(){
+  const messages_container = document.getElementById('chat_box');
+  let roomName = JSON.parse(document.getElementById('roomname').textContent);
+  let chatSocket = new WebSocket(
+    'ws://'
+      + window.location.host
+      + '/ws/chatrooms/'
+      + roomName
+      + '/'
+  );
+
+  chatSocket.onopen = function(e) {
+      chatSocket.send(JSON.stringify({
+          'message': 'get-room-messages'
+      }));
+  };
+
+  chatSocket.onmessage = function(e) {
+    let message = JSON.parse(e.data)['message'];
+    if(message['message-type']=='get-room-messages'){
+      message_body = JSON.parse(message['message-body']);
+      let saved_messages = "";
+      for(let i=0;i<message_body.length;i++){
+          saved_messages +=
+          '<li>'+
+              '<div class="d-flex justify-content-start mb-3">'+
+                  '<div class="w-75 border border-danger rounded-lg p-2">'+
+                      '<strong>'+ message_body[i]['fields']['sender'] +'</strong><br>'+
+                      message_body[i]['fields']['message'] +
+                  '</div>'+
+              '</div>'+
+          '</li>';
+      }
+      $('#messages').append(saved_messages);
+    }else if(message['message-type']=='update-online-users'){
+      $('#online').text(message['message-body']);
+    }else{
+      let output;
+      if(message['message-body']['user_id']==$('#current_user_id').val()){
+        output = 
+          '<li>'+
+              '<div class="d-flex justify-content-end mb-3">'+
+                  '<div class="w-75 border border-primary rounded-lg p-2">'+
+                      '<strong>You</strong><br>'+
+                          message['message-body']['message'] +
+                  '</div>'+
+              '</div>'+
+          '</li>';
+      }else{
+        output = 
+          '<li>'+
+              '<div class="d-flex justify-content-start mb-3">'+
+                  '<div class="w-75 border border-danger rounded-lg p-2">'+
+                      '<strong>'+ message['message-body']['sender'] +'</strong><br>'+
+                          message['message-body']['message'] +
+                  '</div>'+
+              '</div>'+
+          '</li>';            
+      }
+      $('#messages').append(output);
+      shouldScroll = messages_container.scrollTop + messages_container.clientHeight === messages_container.scrollHeight;
+      if (!shouldScroll) {
+          scrollToBottom();
+      }
+    }
+  };
+  
+  function scrollToBottom() {
+    messages_container.scrollTop = messages_container.scrollHeight;
+  }
+
+  chatSocket.onclose = function(e) {
+      console.error('Chat socket closed unexpectedly');
+  };
+
+  $('#send_message').focus();
+  $('#send_message').keyup(function(e){
+    if (e.keyCode === 13) {  // enter, return
+          $('#send').click();
+      }
+  });
+
+  $('#send').click(function(){
+    let message = $('#send_message').val();
+    let sender = $('#current_user').val();
+    let user_id = $('#current_user_id').val();
+    chatSocket.send(JSON.stringify({
+        'message': message,
+        'sender': sender,
+        'user_id': user_id
+    }));
+    $('#send_message').val('');
+  });
+});  
+
+</script>
+{% endblock %}

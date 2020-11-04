@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="shadow p-4 mb-4 bg-white">
+    <div class="text-center my-5">
+        <h3>Django Chat Rooms</h3>
+    </div>
+    <form method="POST" action="/">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="roomname">Enter room name:</label>
+          <input type="text" class="form-control" id="roomname" name='roomname'>
+        </div>
+        <div class="form-group">
+            <label for="username">Enter your username:</label>
+            <input type="text" class="form-control" id="username" name='username'>
+        </div>
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary">Enter</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,1 @@
+web: daphne django_chatroom.asgi:application

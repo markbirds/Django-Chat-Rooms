@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+django = "*"
+channels = "==2.4.0"
+channels-redis = "*"
+psycopg2 = "*"
+daphne = "*"
+
+[requires]
+python_version = "3.8"

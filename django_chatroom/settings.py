@@ -25,7 +25,7 @@ SECRET_KEY = '$w#igp9atubv7^!x^sy(l96re8-xz13dqcd3u=v#krb-=d^tmd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://mb-django-chatrooms.herokuapp.com/','127.0.0.1']
 
 
 # Application definition

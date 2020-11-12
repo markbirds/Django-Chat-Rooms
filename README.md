@@ -1,7 +1,7 @@
 # Django Chat Rooms
 Chat Room in Django using Channels and Redis.
 
-App link --> http://mb-django-chatrooms.herokuapp.com/
+App link --> https://mb-django-chatrooms.herokuapp.com/
 
 ### Requirements 
 

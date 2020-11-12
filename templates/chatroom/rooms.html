@@ -43,8 +43,15 @@
 $(document).ready(function(){
   const messages_container = document.getElementById('chat_box');
   let roomName = JSON.parse(document.getElementById('roomname').textContent);
+  var loc = window.location;
+  var wsStart = 'ws://';
+
+  if(loc.protocol == 'https:'){
+    var wsStart = 'wss://';
+  }
+
   let chatSocket = new WebSocket(
-    'ws://'
+    wsStart
       + window.location.host
       + '/ws/chatrooms/'
       + roomName
